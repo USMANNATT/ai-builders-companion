@@ -15,7 +15,14 @@ export async function submitLeave(params: {
   from_date: string;
   to_date: string;
 }) {
-  return apiPost("LeaveAjax.php", { action: "submitLeave", ...params });
+  return apiPost("LeaveAjax.php", {
+    action: "submitLeave",
+    roll_no: params.roll_no,
+    course_id: String(params.course_id),
+    reason: params.reason,
+    from_date: params.from_date,
+    to_date: params.to_date,
+  });
 }
 
 export async function fetchLeaveHistory(studentId: string) {

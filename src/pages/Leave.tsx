@@ -74,9 +74,12 @@ export default function Leave() {
       <form onSubmit={handleSubmit} className="bg-card rounded-lg p-4 shadow-card space-y-3">
         <select value={courseId} onChange={(e) => setCourseId(e.target.value)} className="w-full border border-border rounded-md p-2.5 text-sm bg-card">
           <option value="">Select Subject</option>
-          {subjects.map((s: any) => (
-            <option key={s.course_id || s.id} value={s.course_id || s.id}>{s.course_title || s.course_name || s.name}</option>
-          ))}
+          {subjects.map((s: any) => {
+            const cid = String(s.course_id ?? s.id);
+            return (
+              <option key={cid} value={cid}>{s.course_title || s.course_name || s.name} ({s.course_code || ""})</option>
+            );
+          })}
         </select>
         <div className="grid grid-cols-2 gap-3">
           <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
