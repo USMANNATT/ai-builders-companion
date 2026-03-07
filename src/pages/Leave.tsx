@@ -41,9 +41,19 @@ export default function Leave() {
       toast({ title: "Missing fields", description: "Please fill all fields.", variant: "destructive" });
       return;
     }
+    // Find selected course to get its faculty_id/teacher_id
+    const selectedSubject = subjects.find((s: any) => String(s.course_id ?? s.id) === courseId);
+    const facultyId = selectedSubject?.teacher_id || selectedSubject?.faculty_id || "";
     setSubmitting(true);
     try {
-      const res = await submitLeave({ roll_no: rollNo, course_id: courseId, reason: reason.trim(), from_date: fromDate, to_date: toDate });
+      const res = await submitLeave({
+        roll_no: rollNo,
+        course_id: courseId,
+        faculty_id: String(facultyId),
+        reason: reason.trim(),
+        from_date: fromDate,
+        to_date: toDate,
+      });
       if (res?.status === "ALLOK") {
         toast({ title: "Leave submitted successfully!" });
         setReason(""); setCourseId(""); setFromDate(""); setToDate("");
