@@ -44,8 +44,8 @@ export default function Attendance() {
               <div key={c.course_id || c.id} className="bg-card rounded-lg p-4 shadow-card">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <p className="font-semibold text-sm">{c.course_name || c.name}</p>
-                    <p className="text-xs text-muted-foreground">{c.course_code || c.code}</p>
+                    <p className="font-semibold text-sm">{c.course_title || c.course_name || c.name}</p>
+                    <p className="text-xs text-muted-foreground">{c.course_code || c.code || ""}</p>
                   </div>
                   <p className={`text-lg font-bold ${percentColor(pct)}`}>{pct.toFixed(0)}%</p>
                 </div>
