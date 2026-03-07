@@ -17,12 +17,13 @@ export async function submitLeave(params: {
 }) {
   return apiPost("LeaveAjax.php", {
     action: "submitLeave",
-    roll_no: params.roll_no,
-    course_id: String(params.course_id),
-    subject_id: String(params.course_id),
-    reason: params.reason,
-    from_date: params.from_date,
-    to_date: params.to_date,
+    rollNumber: params.roll_no,
+    leaveReason: params.reason,
+    startDate: params.from_date,
+    endDate: params.to_date,
+    hospitalName: "",
+    description: "",
+    selectedCourseIds: JSON.stringify([Number(params.course_id)]),
   });
 }
 
