@@ -23,8 +23,8 @@ export async function submitLeave(params: {
     leaveReason: params.reason,
     startDate: params.from_date,
     endDate: params.to_date,
-    hospitalName: "",
-    description: "",
+    hospitalName: " ",
+    description: params.reason,
     selectedCourses: JSON.stringify(selectedCourses),
     selectedCourseIds: JSON.stringify([Number(params.course_id)]),
   });
