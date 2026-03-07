@@ -28,7 +28,14 @@ export default function Resources() {
     if (!selectedCourse) return;
     setLoading(true);
     getSubjectResources(selectedCourse)
-      .then((res) => setResources(Array.isArray(res) ? res : []))
+      .then((res) => {
+        // Handle nested response: {success:true, data:{status:"success", data:[...]}}
+        let list: any[] = [];
+        if (Array.isArray(res)) list = res;
+        else if (res?.data?.data && Array.isArray(res.data.data)) list = res.data.data;
+        else if (res?.data && Array.isArray(res.data)) list = res.data;
+        setResources(list);
+      })
       .catch(() => setResources([]))
       .finally(() => setLoading(false));
   }, [selectedCourse]);
@@ -52,7 +59,7 @@ export default function Resources() {
         <option value="">Select course</option>
         {courses.map((c: any) => (
           <option key={c.course_id || c.id} value={c.course_id || c.id}>
-            {c.course_name || c.name} ({c.course_code || c.code})
+            {c.course_title || c.course_name || c.name} ({c.course_code || c.code || ""})
           </option>
         ))}
       </select>
@@ -63,8 +70,9 @@ export default function Resources() {
         <div className="space-y-3">
           {resources.map((r: any) => {
             const Icon = iconFor(r.resource_type);
-            const isFile = ["PDF", "DOCX"].includes(r.resource_type?.toUpperCase());
-            const url = isFile ? `${UPLOADS_URL}${r.file_path}` : r.external_link;
+            const rType = r.resource_type?.toUpperCase();
+            const hasFile = !!r.file_path;
+            const url = hasFile ? `${UPLOADS_URL}${r.file_path}` : r.external_link;
             return (
               <div key={r.resource_id} className="bg-card rounded-lg p-4 shadow-card flex items-start gap-3">
                 <div className="gradient-blue rounded-md p-2 shrink-0">
@@ -76,7 +84,7 @@ export default function Resources() {
                   <p className="text-[10px] text-muted-foreground mt-1">{r.uploaded_at}</p>
                 </div>
                 <a href={url} target="_blank" rel="noopener noreferrer" className="shrink-0 gradient-primary rounded-md p-2 text-primary-foreground">
-                  {isFile ? <Download className="h-4 w-4" /> : <ExternalLink className="h-4 w-4" />}
+                  {hasFile ? <Download className="h-4 w-4" /> : <ExternalLink className="h-4 w-4" />}
                 </a>
               </div>
             );

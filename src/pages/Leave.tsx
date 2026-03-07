@@ -75,7 +75,7 @@ export default function Leave() {
         <select value={courseId} onChange={(e) => setCourseId(e.target.value)} className="w-full border border-border rounded-md p-2.5 text-sm bg-card">
           <option value="">Select Subject</option>
           {subjects.map((s: any) => (
-            <option key={s.course_id || s.id} value={s.course_id || s.id}>{s.course_name || s.name}</option>
+            <option key={s.course_id || s.id} value={s.course_id || s.id}>{s.course_title || s.course_name || s.name}</option>
           ))}
         </select>
         <div className="grid grid-cols-2 gap-3">

@@ -38,8 +38,8 @@ export default function Courses() {
                 <BookOpen className="h-5 w-5 text-primary-foreground" />
               </div>
               <div className="min-w-0">
-                <p className="font-semibold text-sm truncate">{c.course_name || c.name}</p>
-                <p className="text-xs text-muted-foreground">{c.course_code || c.code}</p>
+                <p className="font-semibold text-sm truncate">{c.course_title || c.course_name || c.name}</p>
+                <p className="text-xs text-muted-foreground">{c.course_code || c.code || ""}</p>
                 {c.teacher_name && <p className="text-xs text-muted-foreground mt-0.5">{c.teacher_name}</p>}
               </div>
             </button>

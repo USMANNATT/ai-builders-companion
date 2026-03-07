@@ -45,7 +45,7 @@ export default function Results() {
         <option value="">Select course</option>
         {courses.map((c: any) => (
           <option key={c.course_id || c.id} value={c.course_id || c.id}>
-            {c.course_name || c.name}
+            {c.course_title || c.course_name || c.name}
           </option>
         ))}
       </select>

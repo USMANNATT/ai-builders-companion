@@ -19,5 +19,5 @@ export async function submitLeave(params: {
 }
 
 export async function fetchLeaveHistory(studentId: string) {
-  return apiPost("LeaveAjax.php", { action: "fetchLeaves", studentId });
+  return apiPost("dashboardAjax.php", { action: "fetchLeaves", studentId });
 }
