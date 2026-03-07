@@ -1,5 +1,5 @@
 import { apiPost } from "./api";
 
-export async function getSessions() {
-  return apiPost("attendanceAJAX.php", { action: "getSession" });
+export async function getStudentAttendance(studentId: string) {
+  return apiPost("attendanceAJAX.php", { action: "getStudentAttendance", studentId });
 }
