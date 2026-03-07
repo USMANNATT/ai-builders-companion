@@ -2,7 +2,7 @@ import { apiPost } from "./api";
 
 export async function getUpdates(studentId: string) {
   return apiPost("upload_updatesAjax.php", {
-    action: "getUpdates",
+    action: "getStudentUpdates",
     student_id: studentId,
   });
 }

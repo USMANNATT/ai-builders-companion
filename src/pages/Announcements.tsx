@@ -33,9 +33,9 @@ export default function Announcements() {
                   <Bell className="h-4 w-4 text-primary-foreground" />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm">{u.title}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{u.message || u.content}</p>
-                  <p className="text-[10px] text-muted-foreground mt-2">{u.date || u.created_at} • {u.course_name || u.course || ""}</p>
+                  <p className="font-semibold text-sm">{u.update_type}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{u.update_message}</p>
+                  <p className="text-[10px] text-muted-foreground mt-2">{u.update_date} {u.update_time} • {u.course_title} ({u.course_code})</p>
                 </div>
               </div>
             </div>
