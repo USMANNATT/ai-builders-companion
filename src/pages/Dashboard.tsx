@@ -13,6 +13,7 @@ export default function Dashboard() {
   const [rollNo, setRollNo] = useState("");
   const [courseCount, setCourseCount] = useState(0);
   const [pendingLeaves, setPendingLeaves] = useState(0);
+  const [attendance, setAttendance] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,14 +22,23 @@ export default function Dashboard() {
       getStudentName(studentId),
       getStudentSubjects(studentId),
       fetchLeaves(studentId),
-    ]).then(([nameRes, coursesRes, leavesRes]) => {
+      getStudentAttendance(studentId),
+    ]).then(([nameRes, coursesRes, leavesRes, attRes]) => {
       setName(nameRes?.name || "Student");
       setRollNo(nameRes?.roll_no || "");
       setCourseCount(Array.isArray(coursesRes) ? coursesRes.length : 0);
       const leaves = Array.isArray(leavesRes) ? leavesRes : [];
       setPendingLeaves(leaves.filter((l: any) => l.status?.toLowerCase() === "pending").length);
+      setAttendance(Array.isArray(attRes) ? attRes : []);
     }).catch(() => {}).finally(() => setLoading(false));
   }, [studentId]);
+
+  const overallAttendance = useMemo(() => {
+    if (attendance.length === 0) return 0;
+    const totalC = attendance.reduce((s, c) => s + Number(c.total_classes || 0), 0);
+    const attendedC = attendance.reduce((s, c) => s + Number(c.attended_classes || 0), 0);
+    return totalC > 0 ? Math.round((attendedC / totalC) * 100) : 0;
+  }, [attendance]);
 
   if (loading) return <div className="p-4 pt-12"><SkeletonCard count={4} /></div>;
 
