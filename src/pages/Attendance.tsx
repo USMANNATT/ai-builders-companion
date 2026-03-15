@@ -109,11 +109,11 @@ export default function Attendance() {
                     {pct < 75 && (() => {
                       const attended = Number(c.attended_classes || 0);
                       const total = Number(c.total_classes || 0);
-                      // Need: (attended + x) / (total + x) >= 0.75 → x = (0.75*total - attended) / 0.25
-                      const needed = Math.ceil((0.75 * total - attended) / 0.25);
+                      // Fixed semester total: need 75% of total_classes
+                      const needed = Math.ceil(0.75 * total) - attended;
                       return needed > 0 ? (
                         <p className="text-[10px] text-muted-foreground mt-0.5">
-                          Need {needed} more consecutive classes for 75%
+                          Need {needed} more classes for 75%
                         </p>
                       ) : null;
                     })()}
