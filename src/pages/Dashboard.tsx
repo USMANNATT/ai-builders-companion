@@ -71,6 +71,35 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Attendance */}
+      {attendance.length > 0 && (
+        <button onClick={() => navigate("/attendance")} className="w-full text-left bg-card rounded-lg p-4 shadow-card space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold">Attendance</p>
+            <span className={`text-xs font-bold ${overallAttendance >= 75 ? "text-success" : overallAttendance >= 60 ? "text-warning" : "text-destructive"}`}>
+              {overallAttendance}%
+            </span>
+          </div>
+          <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full ${overallAttendance >= 75 ? "bg-success" : overallAttendance >= 60 ? "bg-warning" : "bg-destructive"}`}
+              style={{ width: `${Math.min(overallAttendance, 100)}%` }}
+            />
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {attendance.slice(0, 4).map((c: any) => {
+              const pct = parseFloat(c.attendance_percentage || "0");
+              return (
+                <div key={c.course_id || c.id} className="flex-shrink-0 bg-muted rounded-md px-2.5 py-1.5 text-center min-w-[4rem]">
+                  <p className={`text-xs font-bold ${pct >= 75 ? "text-success" : pct >= 60 ? "text-warning" : "text-destructive"}`}>{pct.toFixed(0)}%</p>
+                  <p className="text-[9px] text-muted-foreground truncate">{c.course_code}</p>
+                </div>
+              );
+            })}
+          </div>
+        </button>
+      )}
+
       {/* Quick Links */}
       <div>
         <h2 className="text-sm font-semibold text-muted-foreground mb-3">Quick Access</h2>
