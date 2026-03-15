@@ -106,6 +106,17 @@ export default function Attendance() {
                       {c.attended_classes} / {c.total_classes} classes attended
                     </p>
                     <p className={`text-xs mt-1 ${textColor(pct)}`}>{statusLabel(pct)}</p>
+                    {pct < 75 && (() => {
+                      const attended = Number(c.attended_classes || 0);
+                      const total = Number(c.total_classes || 0);
+                      // Need: (attended + x) / (total + x) >= 0.75 → x = (0.75*total - attended) / 0.25
+                      const needed = Math.ceil((0.75 * total - attended) / 0.25);
+                      return needed > 0 ? (
+                        <p className="text-[10px] text-muted-foreground mt-0.5">
+                          Need {needed} more consecutive classes for 75%
+                        </p>
+                      ) : null;
+                    })()}
                   </div>
                   <div className="relative shrink-0 flex items-center justify-center">
                     <CircularProgress percentage={pct} />
