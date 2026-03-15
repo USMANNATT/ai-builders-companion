@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { getStudentName, getStudentSubjects, fetchLeaves } from "@/services/dashboard";
+import { getStudentAttendance } from "@/services/attendance";
 import SkeletonCard from "@/components/SkeletonCard";
 import { BookOpen, FileText, BarChart3, ClipboardList, Bell } from "lucide-react";
 
