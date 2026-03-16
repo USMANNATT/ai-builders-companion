@@ -10,10 +10,9 @@ import SkeletonCard from "@/components/SkeletonCard";
 import { Building2, FileText, Printer, Send } from "lucide-react";
 
 const LEAVE_REASONS = [
-  "Medical Leave",
-  "Family Emergency",
-  "Official Duty",
-  "Personal Reason",
+  "Medical",
+  "Personal",
+  "Official",
   "Other",
 ];
 
