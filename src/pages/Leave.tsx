@@ -50,9 +50,11 @@ export default function Leave() {
       getLeaveSubjects(studentId),
       fetchLeaveHistory(studentId),
     ]).then(([info, subs, hist]) => {
-      setStudentName(info?.name || info?.student_name || "");
+      setStudentName(info?.name || info?.student_name || "Student");
       setRollNo(info?.roll_no || info?.rollNumber || "");
-      setSubjects(Array.isArray(subs) ? subs : []);
+      // subs may be array directly or nested
+      const subList = Array.isArray(subs) ? subs : [];
+      setSubjects(subList);
       setHistory(Array.isArray(hist) ? hist : []);
     }).catch(() => {}).finally(() => setLoading(false));
   }, [studentId]);

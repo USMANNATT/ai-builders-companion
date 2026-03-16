@@ -1,11 +1,13 @@
 import { apiPost } from "./api";
 
 export async function getStudentInfo(studentId: string) {
-  return apiPost("LeaveAjax.php", { action: "getStudentInfo", studentId });
+  // Use dashboardAjax which has working CORS
+  return apiPost("dashboardAjax.php", { action: "getStudentName", studentId });
 }
 
 export async function getLeaveSubjects(studentId: string) {
-  return apiPost("LeaveAjax.php", { action: "getStudentSubjects", studentId });
+  // Use dashboardAjax which has working CORS
+  return apiPost("dashboardAjax.php", { action: "getStudentSubjects", student_id: studentId });
 }
 
 export async function submitLeave(params: {
