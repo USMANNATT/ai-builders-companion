@@ -10,23 +10,23 @@ export async function getLeaveSubjects(studentId: string) {
 
 export async function submitLeave(params: {
   roll_no: string;
-  course_id: string;
-  faculty_id: string;
+  selectedCourses: { course_id: number; faculty_id: number }[];
   reason: string;
+  description: string;
+  hospital_name: string;
   from_date: string;
   to_date: string;
 }) {
-  const selectedCourses = [{ course_id: Number(params.course_id), faculty_id: Number(params.faculty_id) }];
   return apiPost("LeaveAjax.php", {
     action: "submitLeave",
     rollNumber: params.roll_no,
     leaveReason: params.reason,
     startDate: params.from_date,
     endDate: params.to_date,
-    hospitalName: " ",
-    description: params.reason,
-    selectedCourses: JSON.stringify(selectedCourses),
-    selectedCourseIds: JSON.stringify([Number(params.course_id)]),
+    hospitalName: params.hospital_name,
+    description: params.description,
+    selectedCourses: JSON.stringify(params.selectedCourses),
+    selectedCourseIds: JSON.stringify(params.selectedCourses.map((c) => c.course_id)),
   });
 }
 
