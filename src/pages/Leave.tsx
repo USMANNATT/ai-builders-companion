@@ -54,7 +54,7 @@ export default function Leave() {
       setRollNo(info?.roll_no || info?.rollNumber || "");
       // subs may be array directly or nested
       const subList = Array.isArray(subs) ? subs : [];
-      setSubjects(Array.isArray(subs) ? subs : []);
+      setSubjects(subList);
       setHistory(Array.isArray(hist) ? hist : []);
     }).catch(() => {}).finally(() => setLoading(false));
   }, [studentId]);
