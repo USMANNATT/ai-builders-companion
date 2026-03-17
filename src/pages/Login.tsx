@@ -52,7 +52,7 @@ export default function Login() {
             <LogIn className="h-8 w-8 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-heading font-bold text-primary-foreground">AI Builders LMS</h1>
-          <p className="text-sm text-muted-foreground mt-1">Sign in to your student account</p>
+          <p className="text-sm text-muted-foreground mt-1">Sign in to your account</p>
         </div>
 
         <form onSubmit={handleLogin} className="bg-card rounded-lg p-6 shadow-card space-y-4">
