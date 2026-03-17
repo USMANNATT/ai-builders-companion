@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import { getSessions, getSessionCourses, getSections, getStudentList, markAttendance } from "@/services/teacher";
 import SkeletonCard from "@/components/SkeletonCard";
 import { Button } from "@/components/ui/button";
