@@ -12,6 +12,7 @@ const SECTIONS = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
 
 export default function TeacherAttendance() {
   const { studentId: teacherId } = useAuth();
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const [sessions, setSessions] = useState<any[]>([]);
