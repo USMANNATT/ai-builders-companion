@@ -16,7 +16,10 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
 
-  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+  if (isAuthenticated) {
+    const savedRole = localStorage.getItem("lms_role");
+    return <Navigate to={savedRole === "teacher" ? "/teacher/dashboard" : "/dashboard"} replace />;
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,12 +28,12 @@ export default function Login() {
     try {
       const res = await login(username.trim(), password);
       if (res.status === "ALLOK") {
-        if (res.role !== "student") {
-          toast({ title: "Access Denied", description: "This app is for students only.", variant: "destructive" });
-          return;
-        }
         loginUser(String(res.id), res.role!);
-        navigate("/dashboard", { replace: true });
+        if (res.role === "teacher") {
+          navigate("/teacher/dashboard", { replace: true });
+        } else {
+          navigate("/dashboard", { replace: true });
+        }
       } else {
         toast({ title: "Login Failed", description: res.status === "WRONG PASSWORD" ? "Incorrect password." : res.message || res.status, variant: "destructive" });
       }
@@ -49,7 +52,7 @@ export default function Login() {
             <LogIn className="h-8 w-8 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-heading font-bold text-primary-foreground">AI Builders LMS</h1>
-          <p className="text-sm text-muted-foreground mt-1">Sign in to your student account</p>
+          <p className="text-sm text-muted-foreground mt-1">Sign in to your account</p>
         </div>
 
         <form onSubmit={handleLogin} className="bg-card rounded-lg p-6 shadow-card space-y-4">
