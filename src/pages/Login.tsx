@@ -28,12 +28,12 @@ export default function Login() {
     try {
       const res = await login(username.trim(), password);
       if (res.status === "ALLOK") {
-        if (res.role !== "student") {
-          toast({ title: "Access Denied", description: "This app is for students only.", variant: "destructive" });
-          return;
-        }
         loginUser(String(res.id), res.role!);
-        navigate("/dashboard", { replace: true });
+        if (res.role === "teacher") {
+          navigate("/teacher/dashboard", { replace: true });
+        } else {
+          navigate("/dashboard", { replace: true });
+        }
       } else {
         toast({ title: "Login Failed", description: res.status === "WRONG PASSWORD" ? "Incorrect password." : res.message || res.status, variant: "destructive" });
       }
