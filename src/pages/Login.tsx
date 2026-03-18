@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth, normalizeRole } from "@/hooks/useAuth";
 import { login } from "@/services/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import { LogIn, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Login() {
-  const { isAuthenticated, loginUser } = useAuth();
+  const { isAuthenticated, isLoading, role, loginUser } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [username, setUsername] = useState("");
@@ -16,9 +16,9 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
 
+  if (isLoading) return null;
   if (isAuthenticated) {
-    const savedRole = localStorage.getItem("lms_role");
-    return <Navigate to={savedRole === "teacher" ? "/teacher/dashboard" : "/dashboard"} replace />;
+    return <Navigate to={role === "teacher" ? "/teacher/dashboard" : "/dashboard"} replace />;
   }
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -28,17 +28,22 @@ export default function Login() {
     try {
       const res = await login(username.trim(), password);
       if (res.status === "ALLOK") {
-        loginUser(String(res.id), res.role!);
-        if (res.role === "teacher") {
-          navigate("/teacher/dashboard", { replace: true });
-        } else {
-          navigate("/dashboard", { replace: true });
-        }
+        const normalizedRole = normalizeRole(res.role);
+        loginUser(String(res.id), normalizedRole ?? "student");
+        navigate(normalizedRole === "teacher" ? "/teacher/dashboard" : "/dashboard", { replace: true });
       } else {
-        toast({ title: "Login Failed", description: res.status === "WRONG PASSWORD" ? "Incorrect password." : res.message || res.status, variant: "destructive" });
+        toast({
+          title: "Login Failed",
+          description: res.status === "WRONG PASSWORD" ? "Incorrect password." : res.message || res.status,
+          variant: "destructive",
+        });
       }
     } catch {
-      toast({ title: "Network Error", description: "Could not connect to server. Please try again.", variant: "destructive" });
+      toast({
+        title: "Network Error",
+        description: "Could not connect to server. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }

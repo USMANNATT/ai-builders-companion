@@ -16,8 +16,8 @@ import Leave from "@/pages/Leave";
 import Announcements from "@/pages/Announcements";
 import Profile from "@/pages/Profile";
 import NotFound from "@/pages/NotFound";
+import { useAuth } from "@/hooks/useAuth";
 
-// Teacher pages
 import TeacherDashboard from "@/pages/teacher/Dashboard";
 import TeacherAttendance from "@/pages/teacher/Attendance";
 import TeacherLeaveRequests from "@/pages/teacher/LeaveRequests";
@@ -29,6 +29,15 @@ import TeacherSettings from "@/pages/teacher/Settings";
 
 const queryClient = new QueryClient();
 
+function HomeRedirect() {
+  const { isAuthenticated, isLoading, role } = useAuth();
+
+  if (isLoading) return null;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+
+  return <Navigate to={role === "teacher" ? "/teacher/dashboard" : "/dashboard"} replace />;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -38,9 +47,8 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<HomeRedirect />} />
 
-            {/* Student routes */}
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/courses" element={<Courses />} />
@@ -52,7 +60,6 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
             </Route>
 
-            {/* Teacher routes */}
             <Route element={<TeacherLayout />}>
               <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
               <Route path="/teacher/attendance" element={<TeacherAttendance />} />
