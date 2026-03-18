@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { getSessions, getSessionCourses, getSections, getStudentList, markAttendance } from "@/services/teacher";
+import { getSessions, getSessionCourses, getStudentList, markAttendance } from "@/services/teacher";
 import SkeletonCard from "@/components/SkeletonCard";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -26,38 +26,56 @@ export default function TeacherAttendance() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // Fetch sessions
   useEffect(() => {
-    getSessions()
-      .then((res) => setSessions(Array.isArray(res) ? res : []))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+    if (!teacherId) return;
 
-  // Fetch courses for session
+    getSessions(teacherId)
+      .then((res) => {
+        const list = Array.isArray(res) ? res : [];
+        setSessions(list);
+
+        if (!selectedSession && list.length > 0) {
+          const first = list[0];
+          setSelectedSession(String(first.id || first.session_id || first.value || first.name || first.session_name || ""));
+        }
+      })
+      .catch(() => setSessions([]))
+      .finally(() => setLoading(false));
+  }, [teacherId, selectedSession]);
+
   useEffect(() => {
-    if (!selectedSession || !teacherId) return;
+    if (!teacherId || !selectedSession) return;
+
     getSessionCourses(teacherId, selectedSession)
-      .then((res) => setCourses(Array.isArray(res) ? res : []))
-      .catch(() => {});
+      .then((res) => {
+        const list = Array.isArray(res) ? res : [];
+        setCourses(list);
+
+        if (list.length === 1) {
+          setSelectedCourse(String(list[0].course_id || list[0].id));
+        }
+      })
+      .catch(() => setCourses([]));
   }, [selectedSession, teacherId]);
 
-  // Fetch students
   useEffect(() => {
     if (!selectedCourse || !selectedSection) return;
+
     getStudentList(selectedCourse, selectedSection, date)
       .then((res) => {
         const list = Array.isArray(res) ? res : [];
         setStudents(list);
         const init: Record<string, boolean> = {};
-        list.forEach((s: any) => { init[s.id || s.student_id || s.roll_no] = false; });
+        list.forEach((s: any) => {
+          init[s.id || s.student_id || s.roll_no] = false;
+        });
         setChecked(init);
       })
       .catch(() => setStudents([]));
   }, [selectedCourse, selectedSection, date]);
 
   const courseName = useMemo(() => {
-    const c = courses.find((c: any) => String(c.course_id || c.id) === selectedCourse);
+    const c = courses.find((course: any) => String(course.course_id || course.id) === selectedCourse);
     return c ? `${c.course_code || ""} ${c.course_title || c.course_name || ""}`.trim() : "";
   }, [courses, selectedCourse]);
 
@@ -87,24 +105,31 @@ export default function TeacherAttendance() {
     <div className="space-y-5 animate-fade-in">
       <h1 className="text-xl font-heading font-bold">Attendance</h1>
 
-      {/* Session selector */}
       <div className="flex flex-wrap items-center gap-3">
         <label className="text-sm font-semibold">SESSION</label>
         <select
           value={selectedSession}
-          onChange={(e) => { setSelectedSession(e.target.value); setSelectedCourse(""); setStudents([]); }}
+          onChange={(e) => {
+            setSelectedSession(e.target.value);
+            setSelectedCourse("");
+            setStudents([]);
+          }}
           className="border border-input rounded-lg px-3 py-2 text-sm bg-background"
         >
           <option value="">Select One</option>
-          {sessions.map((s: any) => (
-            <option key={s.id || s.session_id} value={s.id || s.session_id}>
-              {s.name || s.session_name || s.title}
-            </option>
-          ))}
+          {sessions.map((s: any) => {
+            const value = s.id || s.session_id || s.value || s.name || s.session_name;
+            const label = s.name || s.session_name || s.title || s.label || value;
+
+            return (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            );
+          })}
         </select>
       </div>
 
-      {/* Course buttons */}
       {courses.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {courses.map((c: any) => {
@@ -115,9 +140,7 @@ export default function TeacherAttendance() {
                 onClick={() => setSelectedCourse(cid)}
                 className={cn(
                   "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                  selectedCourse === cid
-                    ? "gradient-primary text-primary-foreground"
-                    : "bg-primary/10 text-primary hover:bg-primary/20"
+                  selectedCourse === cid ? "gradient-primary text-primary-foreground" : "bg-primary/10 text-primary hover:bg-primary/20"
                 )}
               >
                 {c.course_code || c.course_title || c.course_name}
@@ -127,7 +150,6 @@ export default function TeacherAttendance() {
         </div>
       )}
 
-      {/* Section selector */}
       {selectedCourse && (
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-sm font-semibold text-primary">SELECT SECTION</span>
@@ -137,9 +159,7 @@ export default function TeacherAttendance() {
               onClick={() => setSelectedSection(s)}
               className={cn(
                 "w-9 h-9 rounded-full border-2 text-sm font-semibold transition-all flex items-center justify-center",
-                selectedSection === s
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-primary/40 text-primary/60 hover:border-primary"
+                selectedSection === s ? "border-primary bg-primary text-primary-foreground" : "border-primary/40 text-primary/60 hover:border-primary"
               )}
             >
               {s}
@@ -148,7 +168,6 @@ export default function TeacherAttendance() {
         </div>
       )}
 
-      {/* Course header + date */}
       {selectedCourse && courseName && (
         <div className="flex items-center justify-between bg-card rounded-lg p-4 shadow-card">
           <div>
@@ -169,7 +188,6 @@ export default function TeacherAttendance() {
         </div>
       )}
 
-      {/* Student list */}
       {students.length > 0 && (
         <div className="bg-card rounded-lg shadow-card overflow-hidden">
           <div className="gradient-hero p-3">
@@ -192,15 +210,10 @@ export default function TeacherAttendance() {
                 )}
               >
                 <span className="text-muted-foreground">{i + 1}</span>
-                <span className="bg-primary/80 text-primary-foreground px-2 py-0.5 rounded text-xs font-mono w-fit">
-                  {s.roll_no || s.roll_number}
-                </span>
+                <span className="bg-primary/80 text-primary-foreground px-2 py-0.5 rounded text-xs font-mono w-fit">{s.roll_no || s.roll_number}</span>
                 <span>{s.name || s.student_name}</span>
                 <div className="flex justify-center">
-                  <Checkbox
-                    checked={checked[key] || false}
-                    onCheckedChange={() => toggleStudent(key)}
-                  />
+                  <Checkbox checked={checked[key] || false} onCheckedChange={() => toggleStudent(key)} />
                 </div>
               </div>
             );
@@ -223,9 +236,8 @@ export default function TeacherAttendance() {
         </div>
       )}
 
-      {selectedCourse && students.length === 0 && (
-        <p className="text-center text-muted-foreground py-8">No students found for this selection.</p>
-      )}
+      {selectedCourse && students.length === 0 && <p className="text-center text-muted-foreground py-8">No students found for this selection.</p>}
+      {selectedSession && courses.length === 0 && <p className="text-center text-muted-foreground py-8">No courses found for this faculty account.</p>}
     </div>
   );
 }
