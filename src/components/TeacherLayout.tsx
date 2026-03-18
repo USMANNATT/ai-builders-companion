@@ -29,16 +29,19 @@ const sidebarLinks = [
 ];
 
 export default function TeacherLayout() {
-  const { isAuthenticated, role, logoutUser } = useAuth();
+  const { isAuthenticated, isLoading, role, logoutUser } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  if (isLoading) return null;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   if (role !== "teacher") return <Navigate to="/dashboard" replace />;
 
   const handleLogout = async () => {
-    try { await logout(); } catch {}
+    try {
+      await logout();
+    } catch {}
     logoutUser();
     navigate("/login", { replace: true });
   };
@@ -57,7 +60,10 @@ export default function TeacherLayout() {
           return (
             <button
               key={link.path}
-              onClick={() => { navigate(link.path); setMobileOpen(false); }}
+              onClick={() => {
+                navigate(link.path);
+                setMobileOpen(false);
+              }}
               className={cn(
                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
                 active
@@ -85,12 +91,10 @@ export default function TeacherLayout() {
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Desktop sidebar */}
       <aside className="hidden md:flex w-60 flex-col gradient-hero fixed inset-y-0 left-0 z-40">
         <NavContent />
       </aside>
 
-      {/* Mobile overlay */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
@@ -106,9 +110,7 @@ export default function TeacherLayout() {
         </div>
       )}
 
-      {/* Main content */}
       <main className="flex-1 md:ml-60">
-        {/* Mobile header */}
         <div className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card sticky top-0 z-30">
           <button onClick={() => setMobileOpen(true)}>
             <Menu className="h-5 w-5 text-foreground" />
