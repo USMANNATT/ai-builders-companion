@@ -171,7 +171,7 @@ export default function TeacherAttendance() {
       {selectedCourse && courseName && (
         <div className="flex items-center justify-between bg-card rounded-lg p-4 shadow-card">
           <div>
-            <p className="text-lg font-bold">{courses.find((c: any) => String(c.course_id || c.id) === selectedCourse)?.course_code}</p>
+            <p className="text-lg font-bold">{courses.find((c: any) => String(c.classid || c.class_id || c.course_id || c.id) === selectedCourse)?.course_code}</p>
             <span className="text-sm text-muted-foreground">{courseName}</span>
           </div>
           <div className="flex items-center gap-3">
