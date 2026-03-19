@@ -31,6 +31,7 @@ export default function TeacherAttendance() {
 
     getSessions(teacherId)
       .then((res) => {
+        console.log("getSessions response:", JSON.stringify(res));
         const list = Array.isArray(res) ? res : [];
         setSessions(list);
 
@@ -39,7 +40,7 @@ export default function TeacherAttendance() {
           setSelectedSession(String(first.id || first.session_id || first.value || first.name || first.session_name || ""));
         }
       })
-      .catch(() => setSessions([]))
+      .catch((e) => { console.error("getSessions error:", e); setSessions([]); })
       .finally(() => setLoading(false));
   }, [teacherId, selectedSession]);
 
