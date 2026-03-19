@@ -75,7 +75,7 @@ export default function TeacherAttendance() {
   }, [selectedCourse, selectedSection, selectedSession, teacherId, date]);
 
   const courseName = useMemo(() => {
-    const c = courses.find((course: any) => String(course.course_id || course.id) === selectedCourse);
+    const c = courses.find((course: any) => String(course.classid || course.class_id || course.course_id || course.id) === selectedCourse);
     return c ? `${c.course_code || ""} ${c.course_title || c.course_name || ""}`.trim() : "";
   }, [courses, selectedCourse]);
 
