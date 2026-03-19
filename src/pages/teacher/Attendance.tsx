@@ -31,7 +31,6 @@ export default function TeacherAttendance() {
 
     getSessions(teacherId)
       .then((res) => {
-        console.log("getSessions response:", JSON.stringify(res));
         const list = Array.isArray(res) ? res : [];
         setSessions(list);
 
@@ -40,24 +39,23 @@ export default function TeacherAttendance() {
           setSelectedSession(String(first.id || first.session_id || first.value || first.name || first.session_name || ""));
         }
       })
-      .catch((e) => { console.error("getSessions error:", e); setSessions([]); })
+      .catch(() => setSessions([]))
       .finally(() => setLoading(false));
-  }, [teacherId, selectedSession]);
+  }, [teacherId]);
 
   useEffect(() => {
     if (!teacherId || !selectedSession) return;
 
     getSessionCourses(teacherId, selectedSession)
       .then((res) => {
-        console.log("getSessionCourses response:", JSON.stringify(res));
         const list = Array.isArray(res) ? res : [];
         setCourses(list);
 
         if (list.length === 1) {
-          setSelectedCourse(String(list[0].course_id || list[0].id));
+          setSelectedCourse(String(list[0].classid || list[0].class_id || list[0].course_id || list[0].id));
         }
       })
-      .catch((e) => { console.error("getSessionCourses error:", e); setCourses([]); });
+      .catch(() => setCourses([]));
   }, [selectedSession, teacherId]);
 
   useEffect(() => {
@@ -65,7 +63,6 @@ export default function TeacherAttendance() {
 
     getStudentList(selectedCourse, selectedSection, selectedSession, teacherId, date)
       .then((res) => {
-        console.log("getStudentList response:", JSON.stringify(res));
         const list = Array.isArray(res) ? res : [];
         setStudents(list);
         const init: Record<string, boolean> = {};
@@ -74,11 +71,11 @@ export default function TeacherAttendance() {
         });
         setChecked(init);
       })
-      .catch((e) => { console.error("getStudentList error:", e); setStudents([]); });
+      .catch(() => setStudents([]));
   }, [selectedCourse, selectedSection, selectedSession, teacherId, date]);
 
   const courseName = useMemo(() => {
-    const c = courses.find((course: any) => String(course.course_id || course.id) === selectedCourse);
+    const c = courses.find((course: any) => String(course.classid || course.class_id || course.course_id || course.id) === selectedCourse);
     return c ? `${c.course_code || ""} ${c.course_title || c.course_name || ""}`.trim() : "";
   }, [courses, selectedCourse]);
 
@@ -136,7 +133,7 @@ export default function TeacherAttendance() {
       {courses.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {courses.map((c: any) => {
-            const cid = String(c.course_id || c.id);
+            const cid = String(c.classid || c.class_id || c.course_id || c.id);
             return (
               <button
                 key={cid}
@@ -174,7 +171,7 @@ export default function TeacherAttendance() {
       {selectedCourse && courseName && (
         <div className="flex items-center justify-between bg-card rounded-lg p-4 shadow-card">
           <div>
-            <p className="text-lg font-bold">{courses.find((c: any) => String(c.course_id || c.id) === selectedCourse)?.course_code}</p>
+            <p className="text-lg font-bold">{courses.find((c: any) => String(c.classid || c.class_id || c.course_id || c.id) === selectedCourse)?.course_code}</p>
             <span className="text-sm text-muted-foreground">{courseName}</span>
           </div>
           <div className="flex items-center gap-3">

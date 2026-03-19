@@ -28,8 +28,21 @@ export default function Login() {
     try {
       const res = await login(username.trim(), password);
       if (res.status === "ALLOK") {
-        const normalizedRole = normalizeRole(res.role);
-        loginUser(String(res.id), normalizedRole ?? "student");
+        const normalizedRole = normalizeRole(res.role) ?? "student";
+        const authId = normalizedRole === "teacher"
+          ? String(res.facid ?? res.facultyid ?? res.faculty_id ?? res.id ?? "")
+          : String(res.id ?? "");
+
+        if (!authId) {
+          toast({
+            title: "Login Failed",
+            description: "Missing account id from server response.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        loginUser(authId, normalizedRole);
         navigate(normalizedRole === "teacher" ? "/teacher/dashboard" : "/dashboard", { replace: true });
       } else {
         toast({

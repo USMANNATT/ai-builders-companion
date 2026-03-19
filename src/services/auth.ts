@@ -6,6 +6,9 @@ interface LoginResponse {
   role?: string;
   redirect?: string;
   message?: string;
+  facid?: number | string;
+  facultyid?: number | string;
+  faculty_id?: number | string;
 }
 
 export async function login(username: string, password: string): Promise<LoginResponse> {
