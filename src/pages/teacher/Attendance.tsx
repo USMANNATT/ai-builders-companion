@@ -61,9 +61,9 @@ export default function TeacherAttendance() {
   }, [selectedSession, teacherId]);
 
   useEffect(() => {
-    if (!selectedCourse || !selectedSection) return;
+    if (!selectedCourse || !selectedSection || !selectedSession || !teacherId) return;
 
-    getStudentList(selectedCourse, selectedSection, date)
+    getStudentList(selectedCourse, selectedSection, selectedSession, teacherId, date)
       .then((res) => {
         console.log("getStudentList response:", JSON.stringify(res));
         const list = Array.isArray(res) ? res : [];
@@ -75,7 +75,7 @@ export default function TeacherAttendance() {
         setChecked(init);
       })
       .catch((e) => { console.error("getStudentList error:", e); setStudents([]); });
-  }, [selectedCourse, selectedSection, date]);
+  }, [selectedCourse, selectedSection, selectedSession, teacherId, date]);
 
   const courseName = useMemo(() => {
     const c = courses.find((course: any) => String(course.course_id || course.id) === selectedCourse);
