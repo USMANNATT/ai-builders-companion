@@ -75,7 +75,7 @@ export default function TeacherAttendance() {
         setChecked(init);
       })
       .catch((e) => { console.error("getStudentList error:", e); setStudents([]); });
-  }, [selectedCourse, selectedSection, date]);
+  }, [selectedCourse, selectedSection, selectedSession, teacherId, date]);
 
   const courseName = useMemo(() => {
     const c = courses.find((course: any) => String(course.course_id || course.id) === selectedCourse);
