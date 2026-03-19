@@ -65,6 +65,7 @@ export default function TeacherAttendance() {
 
     getStudentList(selectedCourse, selectedSection, date)
       .then((res) => {
+        console.log("getStudentList response:", JSON.stringify(res));
         const list = Array.isArray(res) ? res : [];
         setStudents(list);
         const init: Record<string, boolean> = {};
@@ -73,7 +74,7 @@ export default function TeacherAttendance() {
         });
         setChecked(init);
       })
-      .catch(() => setStudents([]));
+      .catch((e) => { console.error("getStudentList error:", e); setStudents([]); });
   }, [selectedCourse, selectedSection, date]);
 
   const courseName = useMemo(() => {

@@ -41,7 +41,7 @@ function unwrapArray(payload: unknown): any[] {
   if (!payload || typeof payload !== "object") return [];
 
   const record = payload as Record<string, unknown>;
-  const keys = ["data", "result", "results", "courses", "subjects", "sessions", "feedbacks", "leaves", "records"];
+  const keys = ["data", "result", "results", "courses", "subjects", "sessions", "feedbacks", "leaves", "records", "students", "student_list", "list"];
 
   for (const key of keys) {
     if (Array.isArray(record[key])) return record[key] as any[];
