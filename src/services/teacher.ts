@@ -143,6 +143,7 @@ export async function getTeacherCourses(teacherId: string) {
 export async function getSessions(teacherId?: string) {
   return resolveArray(
     [
+      { endpoint: "attendanceAJAX.php", params: { action: "getSessions", facid: teacherId || "" } },
       { endpoint: "attendanceAJAX.php", params: { action: "getSessions", teacher_id: teacherId || "" } },
       { endpoint: "attendanceAJAX.php", params: { action: "getSessions", faculty_id: teacherId || "" } },
       { endpoint: "attendanceAJAX.php", params: { action: "getSessions" } },
@@ -156,13 +157,11 @@ export async function getSessions(teacherId?: string) {
 
 export async function getSessionCourses(teacherId: string, sessionId: string) {
   const sessionCourses = await resolveArray([
+    { endpoint: "attendanceAJAX.php", params: { action: "getFacultyCourses", facid: teacherId, sessionid: sessionId } },
+    { endpoint: "attendanceAJAX.php", params: { action: "getSessionCourses", facid: teacherId, sessionid: sessionId } },
+    { endpoint: "attendanceAJAX.php", params: { action: "getCoursesBySession", facid: teacherId, sessionid: sessionId } },
     { endpoint: "attendanceAJAX.php", params: { action: "getSessionCourses", teacher_id: teacherId, session_id: sessionId } },
-    { endpoint: "attendanceAJAX.php", params: { action: "getSessionCourses", faculty_id: teacherId, session_id: sessionId } },
-    { endpoint: "attendanceAJAX.php", params: { action: "getCoursesBySession", teacher_id: teacherId, session_id: sessionId } },
-    { endpoint: "attendanceAJAX.php", params: { action: "getCoursesBySession", faculty_id: teacherId, session_id: sessionId } },
     { endpoint: "attendanceAJAX.php", params: { action: "getFacultyCourses", faculty_id: teacherId, session_id: sessionId } },
-    { endpoint: "attendanceAJAX.php", params: { action: "getTeacherCourses", teacher_id: teacherId, session_id: sessionId } },
-    { endpoint: "dashboardAjax.php", params: { action: "getTeacherCourses", teacher_id: teacherId, session_id: sessionId } },
   ]);
 
   return sessionCourses.length > 0 ? sessionCourses : getTeacherCourses(teacherId);
@@ -171,16 +170,15 @@ export async function getSessionCourses(teacherId: string, sessionId: string) {
 export async function getSections(courseId: string) {
   return resolveArray([
     { endpoint: "attendanceAJAX.php", params: { action: "getSections", course_id: courseId } },
-    { endpoint: "attendanceAJAX.php", params: { action: "fetchSections", course_id: courseId } },
+    { endpoint: "attendanceAJAX.php", params: { action: "getSections", classid: courseId } },
   ]);
 }
 
-export async function getStudentList(courseId: string, section: string, date: string) {
+export async function getStudentList(courseId: string, section: string, sessionId: string, facultyId: string, date: string) {
   return resolveArray([
-    { endpoint: "attendanceAJAX.php", params: { action: "getStudentList", course_id: courseId, section, date } },
-    { endpoint: "attendanceAJAX.php", params: { action: "fetchStudentList", course_id: courseId, section, date } },
-    { endpoint: "attendanceAJAX.php", params: { action: "getStudents", course_id: courseId, section, date } },
-    { endpoint: "attendanceAJAX.php", params: { action: "getStudentList", courseId, section, date } },
+    { endpoint: "attendanceAJAX.php", params: { action: "getStudentList", classid: courseId, section, sessionid: sessionId, facultyid: facultyId, ondate: date } },
+    { endpoint: "attendanceAJAX.php", params: { action: "getStudentList", course_id: courseId, section, session_id: sessionId, faculty_id: facultyId, date } },
+    { endpoint: "attendanceAJAX.php", params: { action: "getStudentList", classid: courseId, section, sessionid: sessionId, facultyid: facultyId, date } },
   ]);
 }
 
