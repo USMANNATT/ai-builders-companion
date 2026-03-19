@@ -49,6 +49,7 @@ export default function TeacherAttendance() {
 
     getSessionCourses(teacherId, selectedSession)
       .then((res) => {
+        console.log("getSessionCourses response:", JSON.stringify(res));
         const list = Array.isArray(res) ? res : [];
         setCourses(list);
 
@@ -56,7 +57,7 @@ export default function TeacherAttendance() {
           setSelectedCourse(String(list[0].course_id || list[0].id));
         }
       })
-      .catch(() => setCourses([]));
+      .catch((e) => { console.error("getSessionCourses error:", e); setCourses([]); });
   }, [selectedSession, teacherId]);
 
   useEffect(() => {
