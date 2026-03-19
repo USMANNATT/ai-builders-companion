@@ -61,9 +61,9 @@ export default function TeacherAttendance() {
   }, [selectedSession, teacherId]);
 
   useEffect(() => {
-    if (!selectedCourse || !selectedSection) return;
+    if (!selectedCourse || !selectedSection || !selectedSession || !teacherId) return;
 
-    getStudentList(selectedCourse, selectedSection, date)
+    getStudentList(selectedCourse, selectedSection, selectedSession, teacherId, date)
       .then((res) => {
         console.log("getStudentList response:", JSON.stringify(res));
         const list = Array.isArray(res) ? res : [];
