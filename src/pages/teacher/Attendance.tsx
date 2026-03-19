@@ -133,7 +133,7 @@ export default function TeacherAttendance() {
       {courses.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {courses.map((c: any) => {
-            const cid = String(c.course_id || c.id);
+            const cid = String(c.classid || c.class_id || c.course_id || c.id);
             return (
               <button
                 key={cid}
