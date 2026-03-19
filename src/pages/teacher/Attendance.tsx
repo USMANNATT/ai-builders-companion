@@ -31,6 +31,7 @@ export default function TeacherAttendance() {
 
     getSessions(teacherId)
       .then((res) => {
+        console.log("getSessions response:", JSON.stringify(res));
         const list = Array.isArray(res) ? res : [];
         setSessions(list);
 
@@ -39,7 +40,7 @@ export default function TeacherAttendance() {
           setSelectedSession(String(first.id || first.session_id || first.value || first.name || first.session_name || ""));
         }
       })
-      .catch(() => setSessions([]))
+      .catch((e) => { console.error("getSessions error:", e); setSessions([]); })
       .finally(() => setLoading(false));
   }, [teacherId, selectedSession]);
 
@@ -48,6 +49,7 @@ export default function TeacherAttendance() {
 
     getSessionCourses(teacherId, selectedSession)
       .then((res) => {
+        console.log("getSessionCourses response:", JSON.stringify(res));
         const list = Array.isArray(res) ? res : [];
         setCourses(list);
 
@@ -55,7 +57,7 @@ export default function TeacherAttendance() {
           setSelectedCourse(String(list[0].course_id || list[0].id));
         }
       })
-      .catch(() => setCourses([]));
+      .catch((e) => { console.error("getSessionCourses error:", e); setCourses([]); });
   }, [selectedSession, teacherId]);
 
   useEffect(() => {
@@ -63,6 +65,7 @@ export default function TeacherAttendance() {
 
     getStudentList(selectedCourse, selectedSection, date)
       .then((res) => {
+        console.log("getStudentList response:", JSON.stringify(res));
         const list = Array.isArray(res) ? res : [];
         setStudents(list);
         const init: Record<string, boolean> = {};
@@ -71,7 +74,7 @@ export default function TeacherAttendance() {
         });
         setChecked(init);
       })
-      .catch(() => setStudents([]));
+      .catch((e) => { console.error("getStudentList error:", e); setStudents([]); });
   }, [selectedCourse, selectedSection, date]);
 
   const courseName = useMemo(() => {
