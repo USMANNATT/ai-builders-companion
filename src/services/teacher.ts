@@ -108,7 +108,6 @@ export async function getTeacherName(teacherId: string) {
     [
       { endpoint: "dashboardAjax.php", params: { action: "getTeacherName", teacherId } },
       { endpoint: "dashboardAjax.php", params: { action: "getFacultyName", faculty_id: teacherId } },
-      { endpoint: "dashboardAjax.php", params: { action: "getStudentName", studentId: teacherId } },
     ],
     { name: "Faculty", teacher_name: "Faculty" }
   );
@@ -126,14 +125,14 @@ export async function getTeacherStats(teacherId: string) {
 
 export async function getTeacherCourses(teacherId: string) {
   return resolveArray([
+    { endpoint: "attendanceAJAX.php", params: { action: "getFacultyCourses", facid: teacherId } },
+    { endpoint: "attendanceAJAX.php", params: { action: "getFacultyCourses", facultyid: teacherId } },
+    { endpoint: "attendanceAJAX.php", params: { action: "getFacultyCourses", faculty_id: teacherId } },
+    { endpoint: "attendanceAJAX.php", params: { action: "getTeacherCourses", teacher_id: teacherId } },
     { endpoint: "dashboardAjax.php", params: { action: "getTeacherCourses", teacher_id: teacherId } },
     { endpoint: "dashboardAjax.php", params: { action: "getFacultyCourses", faculty_id: teacherId } },
     { endpoint: "dashboardAjax.php", params: { action: "getTeacherSubjects", teacher_id: teacherId } },
     { endpoint: "dashboardAjax.php", params: { action: "getFacultySubjects", faculty_id: teacherId } },
-    { endpoint: "dashboardAjax.php", params: { action: "getStudentSubjects", teacher_id: teacherId } },
-    { endpoint: "dashboardAjax.php", params: { action: "getStudentSubjects", student_id: teacherId } },
-    { endpoint: "attendanceAJAX.php", params: { action: "getTeacherCourses", teacher_id: teacherId } },
-    { endpoint: "attendanceAJAX.php", params: { action: "getFacultyCourses", faculty_id: teacherId } },
     { endpoint: "upload_resourceAjax.php", params: { action: "getTeacherCourses", teacher_id: teacherId } },
     { endpoint: "upload_updatesAjax.php", params: { action: "getTeacherCourses", teacher_id: teacherId } },
     { endpoint: "examsAjax.php", params: { action: "getTeacherCourses", teacher_id: teacherId } },
